@@ -1,7 +1,4 @@
-use axum::{
-    middleware,
-    routing::post,
-};
+use axum::middleware;
 use rs_kafka_mongo::{
     auth::{self},
     config::Config,
@@ -25,10 +22,12 @@ use utoipa_swagger_ui::SwaggerUi;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     #[derive(OpenApi)]
     #[openapi(
+        info(description = "This project is a simple yet complete API built in Rust, demonstrating user authentication and full CRUD operations for products. It integrates MongoDB for persistent storage and uses Kafka to stream product-related events. The entire application is containerized with Docker for easy deployment, and Swagger UI is included to provide a clear and interactive interface for testing the API endpoints."),
         modifiers(&SecurityAddon),
         tags(
             (name = "product", description = "product api management"),
-            (name = "message", description = "message api management")
+            (name = "message", description = "message api management"),
+            (name = "user", description = "user api management")
         )
     )]
     struct ApiDoc;
@@ -76,7 +75,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .split_for_parts();
 
     let router =
-        router.merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", api.clone()));
+        router.merge(SwaggerUi::new("/").url("/api-docs/openapi.json", api.clone()));
 
     let listener = tokio::net::TcpListener::bind(&config.server_addr).await?;
     tracing::info!("Server listening on {}", config.server_addr);
@@ -87,8 +86,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 fn auth_routes(app_state: AppState) -> OpenApiRouter {
     OpenApiRouter::new()
-        .route("/signup", post(auth::handlers::signup))
-        .route("/login", post(auth::handlers::login))
+        .routes(routes!(auth::handlers::signup))
+        .routes(routes!(auth::handlers::login))
         .with_state(app_state)
 }
 

@@ -9,6 +9,14 @@ use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use mongodb::bson::oid::ObjectId;
 use tracing::{error, info, warn};
 
+#[utoipa::path(
+    post,
+    path = "/signup",
+    tag = "user",
+    responses(
+        (status = 200, description = "Signup successfully")
+    ),
+)]
 pub async fn signup(
   State(state): State<AppState>,
   Json(payload): Json<SignupRequest>,
@@ -70,6 +78,14 @@ pub async fn signup(
   }
 }
 
+#[utoipa::path(
+    post,
+    path = "/login",
+    tag = "user",
+    responses(
+        (status = 200, description = "Login successfully", body = AuthResponse)
+    ),
+)]
 pub async fn login(
   State(state): State<AppState>,
   Json(payload): Json<LoginRequest>,

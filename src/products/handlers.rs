@@ -85,7 +85,7 @@ pub async fn create_product(
         (status = 200, description = "Get product successfully", body = [ProductResponse])
     ),
     params(
-        ("id" = i32, Path, description = "product id")
+        ("id" = String, Path, description = "product id")
     ),
     security(
         ("token" = [])
@@ -160,7 +160,7 @@ pub async fn list_products(
         (status = 200, description = "Update products successfully", body = [ProductResponse])
     ),
     params(
-        ("id" = i32, Path, description = "product id")
+        ("id" = String, Path, description = "product id")
     ),
     security(
         ("token" = [])
@@ -251,7 +251,7 @@ pub async fn update_product(
         (status = 200, description = "Delete products successfully", body = [ProductResponse])
     ),
     params(
-        ("id" = i32, Path, description = "product id")
+        ("id" = String, Path, description = "product id")
     ),
     security(
         ("token" = [])
